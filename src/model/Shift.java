@@ -9,7 +9,7 @@ public class Shift {
 	private String code;
 	private String status;
 	
-	public Shift(String code) {
+	public Shift(String code, User user) {
 		this.code = code;
 		this.status = "No attended.";
 	}
@@ -22,5 +22,7 @@ public class Shift {
 		return status;
 	}
 	
-	
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

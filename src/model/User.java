@@ -1,16 +1,19 @@
 package model;
 
-import java.util.*;
-
 public class User {
 
+	public final static String CC = "CC";
+	public final static String IC = "IC";
+	public final static String CR = "CR";
+	public final static String PASSPORT = "Passport";
+	public final static String F = "F";
+	
 	private String documentType;
 	private String id;
 	private String names;
 	private String lastName;
 	private String phone;
 	private String address;
-	private ArrayList<Shift> shifts;
 	
 	public User(String documentType, String id, String names, String lastName, String phone, String address) {
 		this.documentType = documentType;
@@ -19,7 +22,6 @@ public class User {
 		this.lastName = lastName;
 		this.phone = phone;
 		this.address = address;
-		shifts = new ArrayList<>();
 	}
 
 	public String getDocumentType() {
@@ -44,10 +46,6 @@ public class User {
 
 	public String getAddress() {
 		return address;
-	}
-	
-	public ArrayList<Shift> getShifts() {
-		return shifts;
 	}
 	
 }
