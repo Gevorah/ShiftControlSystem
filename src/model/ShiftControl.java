@@ -33,15 +33,22 @@ public class ShiftControl {
 	}
 	
 	public void registerShift(String id) {
-		boolean flag = false;
+		User temp = checkUser(id);
 		String code = null;
-		for(int i=0;i<users.size()&&flag==false;i++) {
-			if(users.get(i).getId().equals(id)) {
-				code = selectCode();
-				shifts.add(new Shift(code,users.get(i)));
-				flag = true;
-			}
+		if(temp!=null) {
+			code = selectCode();
+			shifts.add(new Shift(code,temp));
+		}else {
+			throw new NullPointerException();
 		}
+	}
+		
+	public User checkUser(String id) {
+		User temp = null;
+		for(int i=0;i<users.size()&&temp!=null;i++) {
+			temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
+		}
+		return temp;
 	}
 	
 	public String selectCode() {
@@ -78,4 +85,5 @@ public class ShiftControl {
 		}
 		return toAttend;
 	}
+
 }
