@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.*;
+
+import customExceptions.*;
 import model.ShiftControl;
 
 public class Main {
@@ -29,7 +31,7 @@ public class Main {
 			switch (s) {
 			case 1:
 				do {
-					moreUsers = false;
+					moreUsers = true;
 					check = false;
 					int docType = -1;
 					String id = null;
@@ -47,51 +49,60 @@ public class Main {
 						} catch (InputMismatchException e) {
 							System.err.printf("%n%s",e.getMessage());
 						}
-					} while (check);
+					} while (check==false);
 					check = false;
 					do {
 						try {
 							System.out.printf("%nDocument Number: ");
 							id = main.reader.nextLine();
-							if(main.control.checkUser(id)==null) {
-								check = true;
-								System.out.printf("The Document Number Already Exist.");
-							}else if(lastNames.trim().contentEquals("")){
-								System.out.printf("Error.");
+							if(main.control.checkUser(id)!=null) {
+								throw new ExistException(id);
 							}
+							main.check(lastNames);
 						} catch (Exception e) {
 							System.err.printf("%n%s",e.getMessage());
 						}
-					} while (check);
+					} while (check==false);
 					check = false;
 					do {
-						System.out.printf("%nNames: ");
-						names = main.reader.nextLine();
-						if(names.trim().contentEquals("")) {
-							check = true;
-						}else {
-							System.out.printf("Error.");
+						try {
+							System.out.printf("%nNames: ");
+							names = main.reader.nextLine();
+							main.check(lastNames);
+						}catch(NoDataException e) {
+							System.err.printf("%n%s",e.getMessage());
 						}
-					} while (check);
+					} while (check==false);
 					check = false;
 					do {
-						System.out.printf("%nLast Name: ");
-						lastNames = main.reader.nextLine();
-						if(lastNames.trim().contentEquals("")) {
-							check = true;
-						}else {
-							System.out.printf("Error.");
+						try {
+							System.out.printf("%nLast Names: ");
+							lastNames = main.reader.nextLine();
+							main.check(lastNames);
+						} catch (NoDataException e) {
+							System.err.printf("%n%s",e.getMessage());
 						}
-					} while (check);
+					} while (check==false);
 					System.out.printf("%nPhone: ");
 					String phone = main.reader.nextLine();
 					System.out.printf("%nAddress: ");
 					String address = main.reader.nextLine();
 					main.control.addUser(docType, id, names, lastNames, phone, address);
-					System.out.printf("%n%s%s", "1.Add another user. ", " 2.Back to the menu.");
-					int condition = Integer.parseInt(main.reader.nextLine());
-					moreUsers = condition == 1 ? true : false;
-				} while (moreUsers);
+					check = false;
+					do {
+						try {
+							System.out.printf("%n%s%s", "1.Add another user. ", " 2.Back to the menu.");
+							int condition = Integer.parseInt(main.reader.nextLine());
+							if(condition==2) {
+								moreUsers = false;
+							}else if(condition!=1){
+								System.out.printf("Incorrect selection.");
+							}
+						}catch(InputMismatchException e) {
+							System.err.printf("%n%s",e.getMessage());
+						}
+					}while(check==false);
+				} while (moreUsers==true);
 				break;
 			case 2:
 				do {
@@ -125,8 +136,13 @@ public class Main {
 		return String.format("%n%s%n%s%n%s%n%s", "1.Add an user", "2.Register a shift", "3.Serve a shift", "4.Exit");
 	}
 
-	public boolean check(String input) {
-		boolean check = input != null && input.contentEquals("") ? true : false;
+	public boolean check(String input) throws NoDataException {
+		boolean check = false;
+		if(input.trim().contentEquals("")){
+			throw new NoDataException();
+		}else {
+			check = true;
+		}
 		return check;
 	}
 }

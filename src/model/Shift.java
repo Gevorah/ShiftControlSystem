@@ -7,6 +7,7 @@ public class Shift {
 	public final static String NO_USER = "No user";
 	
 	private String code;
+	private User user;
 	private String status;
 	
 	public Shift(String code, User user) {
@@ -22,6 +23,10 @@ public class Shift {
 		return status;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
