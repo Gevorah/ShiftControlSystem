@@ -11,17 +11,22 @@ public class User {
 	private String documentType;
 	private String id;
 	private String names;
-	private String lastName;
+	private String lastNames;
 	private String phone;
 	private String address;
 	
-	public User(String documentType, String id, String names, String lastName, String phone, String address) {
+	public User(String documentType, String id, String names, String lastNames, String phone, String address) {
 		this.documentType = documentType;
 		this.id = id;
 		this.names = names;
-		this.lastName = lastName;
+		this.lastNames = lastNames;
 		this.phone = phone;
 		this.address = address;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("User [%s - %s]",documentType,id);
 	}
 
 	public String getDocumentType() {
@@ -36,8 +41,8 @@ public class User {
 		return names;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getLastNames() {
+		return lastNames;
 	}
 
 	public String getPhone() {

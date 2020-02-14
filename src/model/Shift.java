@@ -10,11 +10,17 @@ public class Shift {
 	private User user;
 	private String status;
 	
-	public Shift(String code, User user) {
+	public Shift(String code) {
 		this.code = code;
-		this.status = "No attended.";
+		this.status = NO_ATTENDED;
+		this.user = null;
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("Shift [%s - %s]",code,status);
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -25,6 +31,10 @@ public class Shift {
 	
 	public User getUser() {
 		return user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public void setStatus(String status) {

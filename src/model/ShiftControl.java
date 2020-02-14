@@ -2,6 +2,8 @@ package model;
 
 import java.util.*;
 
+import customExceptions.*;
+
 public class ShiftControl {
 
 	private ArrayList<User> users;
@@ -9,7 +11,8 @@ public class ShiftControl {
 	
 	public ShiftControl(){
 		users = new ArrayList<>();
-	}
+		shifts = new ArrayList<>();
+		}
 	
 	public void addUser(int docType, String id, String names, String lastName, String phone, String address) {
 		String dt = selectDT(docType);
@@ -32,27 +35,35 @@ public class ShiftControl {
 		return dt;
 	}
 	
-	public void registerShift(String id) {
+	public String registerShift(String id) throws AlreadyHasShiftException {
 		User temp = checkUser(id);
-		String code = null;
+		Shift sft = shifts.get(shifts.size()-1);
 		if(temp!=null) {
-			code = selectCode();
-			shifts.add(new Shift(code,temp));
+			if(selectUserShift(id)==null||!selectUserShift(id).getStatus().equals(Shift.NO_ATTENDED)) {
+				sft.setUser(temp);
+				addShift();
+			}else {
+				throw new AlreadyHasShiftException(id,selectUserShift(id).toString());
+			}
 		}else {
 			throw new NullPointerException();
 		}
+		return String.format("The Shift %s Has Been Asigned to %s",sft.getCode(),temp.toString());
 	}
 		
 	public User checkUser(String id) {
 		User temp = null;
-		for(int i=0;i<users.size()&&temp!=null;i++) {
-			temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
+		for(int i=0;i<users.size()&&temp==null;i++) {
+				temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
 		}
 		return temp;
 	}
 	
-	public String selectCode() {
-		String code = null;
+	public void addShift() {
+		String code;
+		if(shifts.size()==2600) {
+			shifts.clear();
+		}
 		if(shifts.isEmpty()) {
 			code = "A00";
 		}else {
@@ -65,25 +76,41 @@ public class ShiftControl {
 			}
 			code = String.format("%s%02d",first,last);
 		}
-		return code;
+		shifts.add(new Shift(code));
 	}
 	
 	public void serveShift(int status) {
-		Shift temp = selectShift();
+		Shift temp = selectToServeShift();
 		if(status==1)temp.setStatus(Shift.ATTENDED);
 		if(status==2)temp.setStatus(Shift.NO_USER);
 	}
 	
-	public Shift selectShift() {
-		Shift toAttend = null;
-		boolean flag = false;
-		for(int i=0;i<shifts.size()&&flag==false;i++) {
+	public Shift selectToServeShift() {
+		Shift next = null;
+		for(int i=0;i<shifts.size()&&next==null;i++) {
 			if(shifts.get(i).getStatus().equals(Shift.NO_ATTENDED)) {
-				toAttend = shifts.get(i);
-				flag = true;
+				next = shifts.get(i);
 			}
 		}
-		return toAttend;
+		return next;
 	}
 
+	public Shift selectUserShift(String input) {
+		Shift temp = null;
+		for(int i=0;i<shifts.size()&&temp==null;i++) {
+			if(shifts.get(i).getUser().getId().equalsIgnoreCase(input)) {
+				temp = shifts.get(i);
+			}
+		}		
+		return temp;
+	}
+	
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+
+	public ArrayList<Shift> getShifts() {
+		return shifts;
+	}
+	
 }

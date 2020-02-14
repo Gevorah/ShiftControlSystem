@@ -16,6 +16,7 @@ public class Main {
 
 	public void init() {
 		control = new ShiftControl();
+		control.addShift();
 	}
 
 	public static void main(String[] args) {
@@ -34,9 +35,9 @@ public class Main {
 					moreUsers = true;
 					check = false;
 					int docType = -1;
-					String id = null;
-					String names = null;
-					String lastNames = null;
+					String id = "";
+					String names = "";
+					String lastNames = "";
 					do {
 						try {
 							System.out.printf("%n%s%n%s%s%s%s%s", "Document Type: ", "", "", "", "", "");
@@ -58,8 +59,10 @@ public class Main {
 							if(main.control.checkUser(id)!=null) {
 								throw new ExistException(id);
 							}
-							main.check(lastNames);
-						} catch (Exception e) {
+							check = main.check(id);
+						} catch (ExistException e) {
+							System.err.printf("%n%s",e.getMessage());
+						}catch(DataException e) {
 							System.err.printf("%n%s",e.getMessage());
 						}
 					} while (check==false);
@@ -68,8 +71,8 @@ public class Main {
 						try {
 							System.out.printf("%nNames: ");
 							names = main.reader.nextLine();
-							main.check(lastNames);
-						}catch(NoDataException e) {
+							check = main.check(names);
+						}catch(DataException e) {
 							System.err.printf("%n%s",e.getMessage());
 						}
 					} while (check==false);
@@ -78,8 +81,8 @@ public class Main {
 						try {
 							System.out.printf("%nLast Names: ");
 							lastNames = main.reader.nextLine();
-							main.check(lastNames);
-						} catch (NoDataException e) {
+							check = main.check(lastNames);
+						} catch (DataException e) {
 							System.err.printf("%n%s",e.getMessage());
 						}
 					} while (check==false);
@@ -91,11 +94,14 @@ public class Main {
 					check = false;
 					do {
 						try {
-							System.out.printf("%n%s%s", "1.Add another user. ", " 2.Back to the menu.");
+							System.out.printf("%n%s%s", "1.Add Another User. ", " 2.Back to the Menu.");
 							int condition = Integer.parseInt(main.reader.nextLine());
-							if(condition==2) {
+							if(condition==1) {
+								check = true;
+							}else if(condition==2) {
 								moreUsers = false;
-							}else if(condition!=1){
+								check = true;
+							}else {
 								System.out.printf("Incorrect selection.");
 							}
 						}catch(InputMismatchException e) {
@@ -106,19 +112,39 @@ public class Main {
 				break;
 			case 2:
 				do {
+					String rs = "";
 					moreShifts = false;
+					check = false;
 					try {
 						System.out.printf("%nDocument Number: ");
-						String rs = main.reader.nextLine();
-						main.control.registerShift(rs);
+						rs = main.reader.nextLine();
+						System.out.printf("%n%s",main.control.registerShift(rs));
+						do {
+							try {
+								System.out.printf("%n%s%s", "1.Register Another Shift.. ", " 2.Back to the menu.");
+								int condition = Integer.parseInt(main.reader.nextLine());
+								if(condition==1) {
+									check = true;
+								}else if(condition==2) {
+									moreShifts = false;
+									check = true;
+								}else {
+									System.out.printf("Incorrect selection.");
+								}
+							}catch(InputMismatchException e) {
+								System.err.printf("%n%s",e.getMessage());
+							}
+						}while(check==false);
 					}catch(NullPointerException e) {
+						System.err.printf("%n%s",e.getMessage());
+					} catch (AlreadyHasShiftException e) {
 						System.err.printf("%n%s",e.getMessage());
 					}
 				}while(moreShifts);
 				break;
 			case 3:
 				try {
-					System.out.printf("%n%s%30s%n%30s", main.control.selectShift().getCode(), "1.Attend", "2.No user");
+					System.out.printf("%n%s%n%s   %s", main.control.selectToServeShift().getCode(), "1.Attend", "2.No user");
 				} catch (NullPointerException e) {
 					System.err.printf("%n%s",e.getMessage());
 				}
@@ -136,10 +162,11 @@ public class Main {
 		return String.format("%n%s%n%s%n%s%n%s", "1.Add an user", "2.Register a shift", "3.Serve a shift", "4.Exit");
 	}
 
-	public boolean check(String input) throws NoDataException {
+	public boolean check(String input) throws DataException {
 		boolean check = false;
-		if(input.trim().contentEquals("")){
-			throw new NoDataException();
+		String toTrim = input.trim();
+		if(toTrim.trim().contentEquals("")){
+			throw new DataException();
 		}else {
 			check = true;
 		}

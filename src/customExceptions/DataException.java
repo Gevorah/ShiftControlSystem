@@ -1,9 +1,9 @@
 package customExceptions;
 
 @SuppressWarnings("serial")
-public class NoDataException extends Exception{
+public class DataException extends IllegalArgumentException{
 	
-	public NoDataException() {
+	public DataException() {
 		super("The data was not input.");
 	}
 }
