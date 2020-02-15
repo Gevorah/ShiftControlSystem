@@ -21,7 +21,7 @@ public class ShiftControl {
 	public ShiftControl(){
 		users = new ArrayList<>();
 		shifts = new ArrayList<>();
-		}
+	}
 	
 	/**
 	* This method allows add an user in the list.<br>
