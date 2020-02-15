@@ -2,7 +2,8 @@ package model;
 
 import java.util.*;
 
-import customExceptions.*;
+import customExceptions.AlreadyHasShiftException;
+import customExceptions.ExistException;
 
 /**
 *	This class allows create users and shifts.

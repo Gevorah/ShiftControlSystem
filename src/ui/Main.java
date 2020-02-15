@@ -1,7 +1,6 @@
 package ui;
 
 import java.util.*;
-
 import customExceptions.*;
 import model.ShiftControl;
 
