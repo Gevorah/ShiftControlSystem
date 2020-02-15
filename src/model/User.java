@@ -11,7 +11,7 @@ public class User {
 	public final static String CC = "CC";
 	public final static String TI = "TI";
 	public final static String RC = "RC";
-	public final static String PASSPORT = "Passport";
+	public final static String PP = "PP";
 	public final static String CE = "CE";
 	
 	private String documentType;
@@ -41,7 +41,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("User [%s %s - %s: %s]",names,lastNames,documentType,id);
+		return String.format("%-5s%-15s%s%n%-5s%s %-15s%s",
+				"DT","Name","Phone",documentType,names,lastNames,phone);
 	}
 
 	/**

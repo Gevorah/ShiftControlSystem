@@ -37,6 +37,7 @@ public class Main {
 		boolean end = false;
 		boolean moreUsers = true;
 		boolean moreShifts = true;
+		boolean attendMore = true;
 		boolean check = false;
 		do {
 			System.out.println(main.menu());
@@ -122,14 +123,28 @@ public class Main {
 				} while (moreUsers==true);
 				break;
 			case 2:
-				do {
-					String rs = "";
-					moreShifts = true;
-					check = false;
-					try {
+				try {
+					do {
+						String rs = "";
+						moreShifts = true;
+						check = false;	
 						System.out.printf("%nDocument Number: ");
 						rs = main.reader.nextLine();
-						System.out.printf("%n%s",main.control.registerShift(rs));
+						System.out.printf("%n%s%n%s",main.control.selectUser(rs).toString(),"1.Assign shift.");
+						do {
+							try {
+								int condition = Integer.parseInt(main.reader.nextLine());
+								if(condition==1) {
+									System.out.printf("%n%s",main.control.registerShift(rs));
+									check = true;
+								}else {
+									System.out.printf("Incorrect selection.");
+								}
+							}catch(InputMismatchException e) {
+								System.err.printf(e.getMessage());
+							}
+						}while(check==false);
+						check = false;
 						do {
 							try {
 								System.out.printf("%n%s%s", "1.Register another Shift. ", " 2.Back to the menu.");
@@ -146,27 +161,28 @@ public class Main {
 								System.err.printf(e.getMessage());
 							}
 						}while(check==false);
-					}catch(NullPointerException e) {
-						System.err.printf(e.getMessage());
-						moreShifts = false;
-					} catch (AlreadyHasShiftException e) {
-						System.err.printf(e.getMessage());
-						moreShifts = false;
-					}
-				}while(moreShifts==true);
+					}while(moreShifts==true);
+				}catch(NullPointerException e) {
+					System.err.printf(e.getMessage());
+				} catch (AlreadyHasShiftException e) {
+					System.err.printf(e.getMessage());
+				}
 				break;
 			case 3:
 					try {
-						System.out.printf("%n%s%n[%s]%n%s   %s ", "Actual Shift:",
-						main.control.selectToAttendShift().getCode(), "1.Attend", "2.No user");
-						int atnd = Integer.parseInt(main.reader.nextLine());
-						if(atnd==1||atnd==2) {
-							System.out.printf(main.control.attendShift(atnd));
-						}else {
-							System.err.printf("Incorrect selection.");
-						}
+						do {
+							attendMore = true;
+							System.out.printf("%n%s%n[%s]%n%s   %s ", "Actual Shift:",
+							main.control.selectToAttendShift().getCode(), "1.Attend", "2.No user");
+							int atnd = Integer.parseInt(main.reader.nextLine());
+							if(atnd==1||atnd==2) {
+								System.out.printf(main.control.attendShift(atnd));
+							}else {
+								System.err.printf("Incorrect selection.");
+							}
+						}while(attendMore==true);
 					} catch (NullPointerException e) {
-						System.err.printf(e.getMessage());
+						System.err.printf("%n%s",e.getMessage());
 					}
 				break;
 			case 4:

@@ -52,7 +52,7 @@ public class ShiftControl {
 		}else if(docType==3){
 			dt = User.RC;
 		}else if(docType==4){
-			dt = User.PASSPORT;
+			dt = User.PP;
 		}else if(docType==5){
 			dt = User.CE;
 		}
@@ -69,17 +69,13 @@ public class ShiftControl {
 	public String registerShift(String id) throws AlreadyHasShiftException {
 		User temp = selectUser(id);
 		Shift sft = shifts.get(shifts.size()-1);
-		if(temp!=null) {
-			if((checkUserShift(id)==null)) {
-				sft.setUser(temp);
-				addShift();
-			}else {
-				throw new AlreadyHasShiftException(id,checkUserShift(id).toString());
-			}
+		if((checkUserShift(id)==null)) {
+			sft.setUser(temp);
+			addShift();
 		}else {
-			throw new NullPointerException("The User with Id "+id+", doesn't exist.");
+			throw new AlreadyHasShiftException(id,checkUserShift(id).toString());
 		}
-		return String.format("The Shift %s has been asigned to %s",sft.getCode(),temp.toString());
+		return String.format("The Shift %s has been asigned to %s %s",sft.getCode(),temp.getNames(),temp.getLastNames());
 	}
 	
 	/**
@@ -96,6 +92,9 @@ public class ShiftControl {
 			}
 		}else {
 			throw new NullPointerException("The list of users is empty.");
+		}
+		if(temp==null) {
+			throw new NullPointerException("The User with Id "+id+", doesn't exist.");
 		}
 		return temp;
 	} 
@@ -162,7 +161,7 @@ public class ShiftControl {
 				toAttend = shifts.get(i);
 			}
 		}
-		if(toAttend==null)throw new NullPointerException("No shifts to attend.");
+		if(toAttend==null)throw new NullPointerException("No more shifts to attend.");
 		return toAttend;
 	}
 
