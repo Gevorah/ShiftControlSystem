@@ -21,8 +21,10 @@ class ShiftControlTest {
 	
 	public void setup3() throws AlreadyHasShiftException {
 		sc.addUser(1,"666","Gev","B.N.","","");
+		sc.addUser(1,"999","Bin","G.N.","","");
 		sc.addShift();
 		sc.registerShift("666");
+		sc.registerShift("999");
 	}
 	
 	@Test
@@ -43,7 +45,7 @@ class ShiftControlTest {
 	}
 
 	@Test
-	void checkTest() {
+	void selectUserTest() {
 		try {
 			setup1();
 			assertEquals("Adolf",sc.selectUser("123").getNames(),"F 1");
@@ -51,7 +53,7 @@ class ShiftControlTest {
 			sc.getUsers().clear();
 			assertEquals("Rold",sc.selectUser("0").getNames(),"F 3");
 			}catch(NullPointerException e) {
-			System.err.println("Catch: check. "+e.getMessage());
+			System.err.println("Catch: selectUser. "+e.getMessage());
 		}
 	}
 	
@@ -89,31 +91,33 @@ class ShiftControlTest {
 	}
 	
 	@Test
-	void selectToServeShift() {
+	void selectToAttendShiftTest() {
 		try {
 			setup3();
-			assertEquals("No Attended",sc.selectToServeShift().getStatus(),"F 1");
-			assertEquals("666",sc.selectToServeShift().getUser().getId(),"F 2");
-			sc.serveShift(1);
-			assertEquals("No Attended",sc.selectToServeShift().getStatus(),"F 1");
+			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 1");
+			assertEquals("666",sc.selectToAttendShift().getUser().getId(),"F 2");
+			sc.attendShift(1);
+			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 1");
 		}catch(NullPointerException e) {
-			System.err.println("Catch: selectToServeShift. "+e.getMessage());
+			System.err.println("Catch: selectToAttendShift. "+e.getMessage());
 		}catch (AlreadyHasShiftException e) {
-			System.err.println("Catch: selectToServeShift. "+e.getMessage());
+			System.err.println("Catch: selectToAttendShift. "+e.getMessage());
 		}
 	}
 	
 	@Test
-	void serveShift() {
+	void attendShiftTest() {
 		try {
 			setup3();
-			sc.serveShift(1);
-			assertEquals("Attended",sc.selectUserShift("666").getStatus(),"F 1");
-			sc.serveShift(2);
+			sc.attendShift(1);
+			assertEquals("Attended",sc.getShifts().get(0).getStatus(),"F 1");
+			sc.attendShift(2);
+			assertEquals("No user",sc.getShifts().get(1).getStatus(),"F 2");
+			sc.attendShift(2);
 		}catch(NullPointerException e) {
-			System.err.println("Catch: serveShift. "+e.getMessage());
+			System.err.println("Catch: attendShift. "+e.getMessage());
 		} catch (AlreadyHasShiftException e) {
-			System.err.println("Catch: serveShift. "+e.getMessage());
+			System.err.println("Catch: attendShift. "+e.getMessage());
 		}
 	}
 }

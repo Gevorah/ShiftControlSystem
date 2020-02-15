@@ -5,15 +5,27 @@ import java.util.*;
 import customExceptions.*;
 import model.ShiftControl;
 
+/**
+*	This class allows control.
+*	@author Jhon Ijaji.
+*	@version 1.0
+*	@since 1.0
+*/
 public class Main {
 
 	private Scanner reader;
 	private ShiftControl control;
 
+	/*
+	 * This method allows create a scanner.
+	 */
 	public Main() {
 		reader = new Scanner(System.in);
 	}
 
+	/**
+	 * This method allows initialize objects.
+	 */
 	public void init() {
 		control = new ShiftControl();
 		control.addShift();
@@ -120,7 +132,7 @@ public class Main {
 						System.out.printf("%n%s",main.control.registerShift(rs));
 						do {
 							try {
-								System.out.printf("%n%s%s", "1.Register nnother Shift. ", " 2.Back to the menu.");
+								System.out.printf("%n%s%s", "1.Register another Shift. ", " 2.Back to the menu.");
 								int condition = Integer.parseInt(main.reader.nextLine());
 								if(condition==1) {
 									check = true;
@@ -136,20 +148,20 @@ public class Main {
 						}while(check==false);
 					}catch(NullPointerException e) {
 						System.err.printf(e.getMessage());
+						moreShifts = false;
 					} catch (AlreadyHasShiftException e) {
 						System.err.printf(e.getMessage());
+						moreShifts = false;
 					}
 				}while(moreShifts==true);
 				break;
 			case 3:
 					try {
 						System.out.printf("%n%s%n[%s]%n%s   %s ", "Actual Shift:",
-						main.control.selectToServeShift().getCode(), "1.Attend", "2.No user");
+						main.control.selectToAttendShift().getCode(), "1.Attend", "2.No user");
 						int atnd = Integer.parseInt(main.reader.nextLine());
-						if(atnd==1) {
-							main.control.serveShift(1);
-						}else if(atnd==2) {
-							main.control.serveShift(2);
+						if(atnd==1||atnd==2) {
+							System.out.printf(main.control.attendShift(atnd));
 						}else {
 							System.err.printf("Incorrect selection.");
 						}
@@ -166,10 +178,20 @@ public class Main {
 		main.reader.close();
 	}
 
+	/**
+	 * This method allows show the menu options.
+	 * @return The menu options.
+	 */
 	public String menu() {
 		return String.format("%n%s%n%s%n%s%n%s", "1.Add an user", "2.Register a shift", "3.Serve a shift", "4.Exit");
 	}
 
+	/**
+	 * This method allows check a text.
+	 * @param input The text to check.
+	 * @return true if the text have data.
+	 * @throws DataException If the text is empty throws this exception.
+	 */
 	public boolean check(String input) throws DataException {
 		boolean check = false;
 		String toTrim = input.trim();

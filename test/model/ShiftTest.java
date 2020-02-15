@@ -10,7 +10,7 @@ class ShiftTest {
 	void test() {
 		Shift s = new Shift("A00");
 		assertEquals("A00",s.getCode(),"F");
-		assertEquals(Shift.NO_ATTENDED,s.getStatus(),"F");
+		assertEquals(Shift.NOT_ATTENDED,s.getStatus(),"F");
 		assertEquals(null,s.getUser(),"F");
 	}
 
