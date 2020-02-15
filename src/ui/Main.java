@@ -23,8 +23,8 @@ public class Main {
 		Main main = new Main();
 		main.init();
 		boolean end = false;
-		boolean moreUsers = false;
-		boolean moreShifts = false;
+		boolean moreUsers = true;
+		boolean moreShifts = true;
 		boolean check = false;
 		do {
 			System.out.println(main.menu());
@@ -40,15 +40,16 @@ public class Main {
 					String lastNames = "";
 					do {
 						try {
-							System.out.printf("%n%s%n%s%s%s%s%s", "Document Type: ", "", "", "", "", "");
+							System.out.printf("%n%s%n(%s  %s  %s  %s  %s) ", "Document Type: ", 
+							"1.CC", "2.TI", "3.RC", "4.PASSPORT", "5.EC");
 							docType = Integer.parseInt(main.reader.nextLine());
 							if (docType > 0 && docType < 6) {
 								check = true;
 							} else {
-								System.out.printf("Incorrect selection.");
+								System.err.printf("Incorrect selection.");
 							}
 						} catch (InputMismatchException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}
 					} while (check==false);
 					check = false;
@@ -56,14 +57,12 @@ public class Main {
 						try {
 							System.out.printf("%nDocument Number: ");
 							id = main.reader.nextLine();
-							if(main.control.checkUser(id)!=null) {
-								throw new ExistException(id);
-							}
+							main.control.checkUser(id);
 							check = main.check(id);
 						} catch (ExistException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}catch(DataException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}
 					} while (check==false);
 					check = false;
@@ -73,7 +72,7 @@ public class Main {
 							names = main.reader.nextLine();
 							check = main.check(names);
 						}catch(DataException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}
 					} while (check==false);
 					check = false;
@@ -83,7 +82,7 @@ public class Main {
 							lastNames = main.reader.nextLine();
 							check = main.check(lastNames);
 						} catch (DataException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}
 					} while (check==false);
 					System.out.printf("%nPhone: ");
@@ -94,7 +93,7 @@ public class Main {
 					check = false;
 					do {
 						try {
-							System.out.printf("%n%s%s", "1.Add Another User. ", " 2.Back to the Menu.");
+							System.out.printf("%n%s%s", "1.Add another User. ", " 2.Back to the Menu.");
 							int condition = Integer.parseInt(main.reader.nextLine());
 							if(condition==1) {
 								check = true;
@@ -102,10 +101,10 @@ public class Main {
 								moreUsers = false;
 								check = true;
 							}else {
-								System.out.printf("Incorrect selection.");
+								System.err.printf("Incorrect selection.");
 							}
 						}catch(InputMismatchException e) {
-							System.err.printf("%n%s",e.getMessage());
+							System.err.printf(e.getMessage());
 						}
 					}while(check==false);
 				} while (moreUsers==true);
@@ -113,7 +112,7 @@ public class Main {
 			case 2:
 				do {
 					String rs = "";
-					moreShifts = false;
+					moreShifts = true;
 					check = false;
 					try {
 						System.out.printf("%nDocument Number: ");
@@ -121,7 +120,7 @@ public class Main {
 						System.out.printf("%n%s",main.control.registerShift(rs));
 						do {
 							try {
-								System.out.printf("%n%s%s", "1.Register Another Shift.. ", " 2.Back to the menu.");
+								System.out.printf("%n%s%s", "1.Register nnother Shift. ", " 2.Back to the menu.");
 								int condition = Integer.parseInt(main.reader.nextLine());
 								if(condition==1) {
 									check = true;
@@ -132,22 +131,31 @@ public class Main {
 									System.out.printf("Incorrect selection.");
 								}
 							}catch(InputMismatchException e) {
-								System.err.printf("%n%s",e.getMessage());
+								System.err.printf(e.getMessage());
 							}
 						}while(check==false);
 					}catch(NullPointerException e) {
-						System.err.printf("%n%s",e.getMessage());
+						System.err.printf(e.getMessage());
 					} catch (AlreadyHasShiftException e) {
-						System.err.printf("%n%s",e.getMessage());
+						System.err.printf(e.getMessage());
 					}
-				}while(moreShifts);
+				}while(moreShifts==true);
 				break;
 			case 3:
-				try {
-					System.out.printf("%n%s%n%s   %s", main.control.selectToServeShift().getCode(), "1.Attend", "2.No user");
-				} catch (NullPointerException e) {
-					System.err.printf("%n%s",e.getMessage());
-				}
+					try {
+						System.out.printf("%n%s%n[%s]%n%s   %s ", "Actual Shift:",
+						main.control.selectToServeShift().getCode(), "1.Attend", "2.No user");
+						int atnd = Integer.parseInt(main.reader.nextLine());
+						if(atnd==1) {
+							main.control.serveShift(1);
+						}else if(atnd==2) {
+							main.control.serveShift(2);
+						}else {
+							System.err.printf("Incorrect selection.");
+						}
+					} catch (NullPointerException e) {
+						System.err.printf(e.getMessage());
+					}
 				break;
 			case 4:
 				System.out.printf("%nGG.");

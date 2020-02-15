@@ -3,10 +3,10 @@ package model;
 public class User {
 
 	public final static String CC = "CC";
-	public final static String IC = "IC";
-	public final static String CR = "CR";
+	public final static String TI = "TI";
+	public final static String RC = "RC";
 	public final static String PASSPORT = "Passport";
-	public final static String F = "F";
+	public final static String CE = "CE";
 	
 	private String documentType;
 	private String id;
@@ -26,7 +26,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return String.format("User [%s - %s]",documentType,id);
+		return String.format("User [%s %s - %s - %s]",names,lastNames,documentType,id);
 	}
 
 	public String getDocumentType() {

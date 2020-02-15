@@ -24,39 +24,54 @@ public class ShiftControl {
 		if(docType==1) {
 			dt = User.CC;
 		}else if(docType==2){
-			dt = User.IC;
+			dt = User.TI;
 		}else if(docType==3){
-			dt = User.CR;
+			dt = User.RC;
 		}else if(docType==4){
 			dt = User.PASSPORT;
 		}else if(docType==5){
-			dt = User.F;
+			dt = User.CE;
 		}
 		return dt;
 	}
 	
 	public String registerShift(String id) throws AlreadyHasShiftException {
-		User temp = checkUser(id);
+		User temp = selectUser(id);
 		Shift sft = shifts.get(shifts.size()-1);
 		if(temp!=null) {
-			if(selectUserShift(id)==null||!selectUserShift(id).getStatus().equals(Shift.NO_ATTENDED)) {
+			if((selectUserShift(id)==null)||
+			(selectUserShift(id)!=null&&!selectUserShift(id).getStatus().equals(Shift.NO_ATTENDED))) {
 				sft.setUser(temp);
 				addShift();
 			}else {
 				throw new AlreadyHasShiftException(id,selectUserShift(id).toString());
 			}
 		}else {
-			throw new NullPointerException();
+			throw new NullPointerException("The User with Id "+id+", doesn't exist.");
 		}
-		return String.format("The Shift %s Has Been Asigned to %s",sft.getCode(),temp.toString());
+		return String.format("The Shift %s has been asigned to %s",sft.getCode(),temp.toString());
 	}
-		
-	public User checkUser(String id) {
+	
+	public User selectUser(String id) {
 		User temp = null;
-		for(int i=0;i<users.size()&&temp==null;i++) {
+		if(!users.isEmpty()) {
+			for(int i=0;i<users.size()&&temp==null;i++) {
 				temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
+			}
+		}else {
+			throw new NullPointerException("The list of users is empty.");
 		}
 		return temp;
+	} 
+	
+	public void checkUser(String id) throws ExistException {
+		if(!users.isEmpty()) {
+			for(int i=0;i<users.size();i++) {
+				if(users.get(i).getId().equals(id)) {
+					throw new ExistException(id);
+				}
+			}	
+		}
 	}
 	
 	public void addShift() {
@@ -73,6 +88,8 @@ public class ShiftControl {
 			if(last==99) {
 				first = first=='Z'?'A':(char)(first+1);
 				last = 00;
+			}else {
+				last++;
 			}
 			code = String.format("%s%02d",first,last);
 		}
@@ -86,22 +103,25 @@ public class ShiftControl {
 	}
 	
 	public Shift selectToServeShift() {
-		Shift next = null;
-		for(int i=0;i<shifts.size()&&next==null;i++) {
-			if(shifts.get(i).getStatus().equals(Shift.NO_ATTENDED)) {
-				next = shifts.get(i);
+		Shift toServe = null;
+		for(int i=0;i<shifts.size()&&toServe==null;i++) {
+			if(shifts.get(i).getUser()!=null&&shifts.get(i).getStatus().equals(Shift.NO_ATTENDED)) {
+				toServe = shifts.get(i);
 			}
 		}
-		return next;
+		if(toServe==null)throw new NullPointerException("No shifts to serve.");
+		return toServe;
 	}
 
 	public Shift selectUserShift(String input) {
 		Shift temp = null;
 		for(int i=0;i<shifts.size()&&temp==null;i++) {
-			if(shifts.get(i).getUser().getId().equalsIgnoreCase(input)) {
-				temp = shifts.get(i);
+			if(shifts.get(i).getUser()!=null) {
+				if(shifts.get(i).getUser().getId().equalsIgnoreCase(input)) {
+					temp = shifts.get(i);
+				}
 			}
-		}		
+		}
 		return temp;
 	}
 	

@@ -7,7 +7,7 @@ public class AlreadyHasShiftException extends Exception{
 	private String shiftReport;
 	
 	public AlreadyHasShiftException(String id, String shiftReport) {
-		super(String.format("The User Already Has a Shift Assigned. Document Number:%s%s",id,shiftReport));
+		super(String.format("The User Already Has a Shift Assigned. Document Number:%s, %s:",id,shiftReport));
 		this.id = id;
 		this.shiftReport = shiftReport;
 	}
