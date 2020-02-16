@@ -68,6 +68,13 @@ class ShiftControlTest {
 		}catch(NullPointerException e) {
 			System.err.println("Catch: registerShift. "+e.getMessage());
 		}
+		try {
+			sc.registerShift("2");
+		}catch(AlreadyHasShiftException e) {
+			System.err.println("Catch: registerShift. "+e.getMessage());
+		}catch(NullPointerException e) {
+			System.err.println("Catch: registerShift. "+e.getMessage());
+		}
 	}
 	
 	@Test
@@ -97,7 +104,9 @@ class ShiftControlTest {
 			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 1");
 			assertEquals("666",sc.selectToAttendShift().getUser().getId(),"F 2");
 			sc.attendShift(1);
-			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 1");
+			sc.attendShift(1);
+			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 3");
+			assertEquals("999",sc.selectToAttendShift().getUser().getId(),"F 4");
 		}catch(NullPointerException e) {
 			System.err.println("Catch: selectToAttendShift. "+e.getMessage());
 		}catch (AlreadyHasShiftException e) {
