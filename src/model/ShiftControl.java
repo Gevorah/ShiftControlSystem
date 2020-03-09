@@ -8,7 +8,7 @@ import customExceptions.ExistException;
 /**
 *	This class allows create users and shifts.
 *	@author Jhon Ijaji.
-*	@version 1.0
+*	@version 2.0
 *	@since 1.0
 */
 public class ShiftControl {

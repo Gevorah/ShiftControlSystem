@@ -7,7 +7,7 @@ import model.ShiftControl;
 /**
 *	This class allows control.
 *	@author Jhon Ijaji.
-*	@version 1.0
+*	@version 2.0
 *	@since 1.0
 */
 public class Main {
