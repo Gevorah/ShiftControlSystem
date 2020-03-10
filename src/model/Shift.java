@@ -15,6 +15,7 @@ public class Shift {
 	private String code;
 	private User user;
 	private String status;
+	private ShiftType shType;
 	
 	/**
 	 * This method allows create a shift.
@@ -24,6 +25,7 @@ public class Shift {
 		this.code = code;
 		this.status = NOT_ATTENDED;
 		this.user = null;
+		this.shType = null;
 	}
 	
 	@Override
@@ -69,5 +71,13 @@ public class Shift {
 	 */
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * This method allows get the shift type.
+	 * @return The shift type.
+	 */
+	public ShiftType getShType() {
+		return shType;
 	}
 }

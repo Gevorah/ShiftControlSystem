@@ -1,7 +1,7 @@
 package model;
 
 import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.format.*;
 
 /**
 *	This class allows create shifts.
@@ -57,20 +57,29 @@ public class DateTime {
 	
 	/**
 	 * This method allows synchronize the program date-time.
-	 * @return
+	 * @return The current program date-time.
 	 */
 	public LocalDateTime currentDateTime() {
 		return LocalDateTime.now().plus(Period.of(y,m,d)).plus(Duration.ofHours(h).plus(Duration.ofMinutes(mn)).plus(Duration.ofSeconds(s)));
 	}
 	
 	/**
-	 * This method allows check if the date-time to change is after to the program date-time.
+	 * This method allows add seconds to the current program date-time. 
+	 * @param seconds The seconds to add.
+	 * @return A date time with seconds added.
+	 */
+	public LocalDateTime plus(float seconds) {
+		return currentDateTime().plusNanos((long)(seconds*1000000000));
+	}
+	
+	/**
+	 * This method allows check if the given date-time is before to the program date-time.
 	 * @param year The year to check.
 	 * @param month The month to check.
 	 * @param day The day to check.
 	 * @param hour The hour to check.
 	 * @param min The minute to check.
-	 * @return if is after or is before.
+	 * @return if is before.
 	 */
 	public boolean checkDate(int year, int month, int day, int hour, int min){
         LocalDateTime to = LocalDateTime.of(year,month,day,hour,min);
