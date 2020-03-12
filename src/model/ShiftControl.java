@@ -1,7 +1,7 @@
 package model;
 
 import java.util.*;
-
+import java.io.*;
 import customExceptions.AlreadyHasShiftException;
 import customExceptions.ExistException;
 
@@ -11,10 +11,15 @@ import customExceptions.ExistException;
 *	@version 2.0
 *	@since 1.0
 */
-public class ShiftControl {
+public class ShiftControl implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<User> users;
 	private ArrayList<Shift> shifts;
+	private DateTime date;
 	
 	/**
 	 * This method allows create a users list and shifts list.
@@ -199,5 +204,15 @@ public class ShiftControl {
 	public ArrayList<Shift> getShifts() {
 		return shifts;
 	}
+
+	/**
+	 * This method allows get the date.
+	 * @return The program date.
+	 */
+	public DateTime getDate() {
+		return date;
+	}
+	
+	
 	
 }

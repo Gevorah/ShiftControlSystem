@@ -65,11 +65,11 @@ public class DateTime {
 	
 	/**
 	 * This method allows add seconds to the current program date-time. 
-	 * @param seconds The seconds to add.
-	 * @return A date time with seconds added.
+	 * @param minutes The minutes to add.
+	 * @return A date time with minutes added.
 	 */
-	public LocalDateTime plus(float seconds) {
-		return currentDateTime().plusNanos((long)(seconds*1000000000));
+	public LocalDateTime plus(float minutes) {
+		return currentDateTime().plusSeconds((long)(minutes*60));
 	}
 	
 	/**
