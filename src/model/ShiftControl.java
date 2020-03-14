@@ -27,6 +27,7 @@ public class ShiftControl implements Serializable{
 	public ShiftControl(){
 		users = new ArrayList<>();
 		shifts = new ArrayList<>();
+		date = new DateTime();
 	}
 	
 	/**
@@ -187,6 +188,34 @@ public class ShiftControl implements Serializable{
 			}
 		}
 		return temp;
+	}
+	
+	/**
+	 * This method allows modify the date-time.
+	 * @param year The year to set.
+	 * @param month The month to set.
+	 * @param day The day to set.
+	 * @param hour The hour to set.
+	 * @param min The minute to set.
+	 * @return A message with information about the changes.
+	 */
+	public String modifyDateTime(int year,int month,int day,int hour,int min) {
+		String show = "The given date-time is less than the current date-time.";
+		if(!date.checkDate(year,month,day,hour,min)) {
+			date.setDateTime(year, month, day, hour, min);
+			show = "The date-time has been changed.";
+			for(Shift tmp:shifts) {
+				if(tmp.getStatus().equals(Shift.NOT_ATTENDED)) {
+					int x = (int)(Math.random()*2);
+					if(x==1) {
+						tmp.setStatus(Shift.ATTENDED);
+					}else {
+						tmp.setStatus(Shift.NO_USER);
+					}
+				}
+			}
+		}
+		return show;
 	}
 	
 	/**

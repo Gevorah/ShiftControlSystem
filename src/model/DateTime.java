@@ -83,7 +83,7 @@ public class DateTime {
 	 */
 	public boolean checkDate(int year, int month, int day, int hour, int min){
         LocalDateTime to = LocalDateTime.of(year,month,day,hour,min);
-        return to.isBefore(dateTime);
+        return to.isBefore(currentDateTime());
     }
 	
 	@Override
