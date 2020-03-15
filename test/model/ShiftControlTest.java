@@ -31,14 +31,14 @@ class ShiftControlTest {
 	void addUserTest() {
 		try {
 			sc.addUser(1,"321","Leon","M.C.","3693","agl");
-			assertEquals(User.CC,sc.selectUser("321").getDocumentType(),"F 1");
-			assertEquals("Leon",sc.selectUser("321").getNames(),"F 1");
-			assertEquals("M.C.",sc.selectUser("321").getLastNames(),"F 2");
-			assertEquals("3693",sc.selectUser("321").getPhone(),"F 3");
-			assertEquals("agl",sc.selectUser("321").getAddress(),"F 4");
+			assertEquals(User.CC,sc.searchUserById("321").getDocumentType(),"F 1");
+			assertEquals("Leon",sc.searchUserById("321").getNames(),"F 1");
+			assertEquals("M.C.",sc.searchUserById("321").getLastNames(),"F 2");
+			assertEquals("3693",sc.searchUserById("321").getPhone(),"F 3");
+			assertEquals("agl",sc.searchUserById("321").getAddress(),"F 4");
 			sc.getUsers().clear();
 			sc.addUser(3,"123","Marc","M.Z.","","");
-			assertEquals(User.RC,sc.selectUser("123").getDocumentType(),"F 1");
+			assertEquals(User.RC,sc.searchUserById("123").getDocumentType(),"F 1");
 		}catch(NullPointerException e) {
 			System.err.println("Catch: addUser. "+e.getMessage());
 		}	
@@ -48,10 +48,10 @@ class ShiftControlTest {
 	void selectUserTest() {
 		try {
 			setup1();
-			assertEquals("Adolf",sc.selectUser("123").getNames(),"F 1");
-			assertEquals("Raud",sc.selectUser("0").getNames(),"F 2");
+			assertEquals("Adolf",sc.searchUserById("123").getNames(),"F 1");
+			assertEquals("Raud",sc.searchUserById("0").getNames(),"F 2");
 			sc.getUsers().clear();
-			assertEquals("Rold",sc.selectUser("0").getNames(),"F 3");
+			assertEquals("Rold",sc.searchUserById("0").getNames(),"F 3");
 			}catch(NullPointerException e) {
 			System.err.println("Catch: selectUser. "+e.getMessage());
 		}
@@ -78,6 +78,11 @@ class ShiftControlTest {
 	}
 	
 	@Test
+	void registerShiftsTest() {
+		setup2();
+	}
+	
+	@Test
 	void addShiftTest() {
 		try {
 			setup2();
@@ -97,32 +102,14 @@ class ShiftControlTest {
 		}
 	}
 	
-	@Test
-	void selectToAttendShiftTest() {
-		try {
-			setup3();
-			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 1");
-			assertEquals("666",sc.selectToAttendShift().getUser().getId(),"F 2");
-			sc.attendShift(1);
-			sc.attendShift(1);
-			assertEquals("Not Attended",sc.selectToAttendShift().getStatus(),"F 3");
-			assertEquals("999",sc.selectToAttendShift().getUser().getId(),"F 4");
-		}catch(NullPointerException e) {
-			System.err.println("Catch: selectToAttendShift. "+e.getMessage());
-		}catch (AlreadyHasShiftException e) {
-			System.err.println("Catch: selectToAttendShift. "+e.getMessage());
-		}
-	}
 	
 	@Test
-	void attendShiftTest() {
+	void attendShiftsTest() {
 		try {
 			setup3();
-			sc.attendShift(1);
+			sc.attendShifts();
 			assertEquals("Attended",sc.getShifts().get(0).getStatus(),"F 1");
-			sc.attendShift(2);
 			assertEquals("No user",sc.getShifts().get(1).getStatus(),"F 2");
-			sc.attendShift(2);
 		}catch(NullPointerException e) {
 			System.err.println("Catch: attendShift. "+e.getMessage());
 		} catch (AlreadyHasShiftException e) {

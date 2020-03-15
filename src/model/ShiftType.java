@@ -9,16 +9,18 @@ package model;
 public class ShiftType {
 
 	private String name;
-	private String time;
+	private float time;
+	private String creation;
 	
 	/**
 	 * This method allows create a shift type.
 	 * @param name The name.
 	 * @param time The time.
 	 */
-	public ShiftType(String name, String time) {
+	public ShiftType(String name, float time, String creation) {
 		this.name = name;
 		this.time = time;
+		this.creation = creation;
 	}
 
 	/**
@@ -33,9 +35,18 @@ public class ShiftType {
 	 * This method allows get the time.
 	 * @return The time
 	 */
-	public String getTime() {
+	public float getTime() {
 		return time;
 	}
+
+	/**
+	 * This method allows get the creation date-time.
+	 * @return The creation date-time.
+	 */
+	public String getCreation() {
+		return creation;
+	}
+	
 	
 	
 }

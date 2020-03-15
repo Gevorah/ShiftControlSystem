@@ -42,93 +42,109 @@ public class Main {
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.init();
+		try {
+			main.load();
+		} catch (Exception e) {
+			System.err.printf("%n%s",e.getMessage());
+		}
 		boolean end = false;
 		boolean moreUsers = true;
 		boolean moreShifts = true;
-		boolean attendMore = true;
 		boolean check = false;
 		do {
 			System.out.println(main.menu());
 			int s = Integer.parseInt(main.reader.nextLine());
 			switch (s) {
 			case 1:
-				do {
-					moreUsers = true;
-					check = false;
-					int docType = -1;
-					String id = "";
-					String names = "";
-					String lastNames = "";
+				System.out.println("1.Add one user  2.Add users automatically.");
+				int x = Integer.parseInt(main.reader.nextLine());
+				if(x==1) {
 					do {
-						try {
-							System.out.printf("%n%s%n(%s  %s  %s  %s  %s) ", "Document Type: ", 
-							"1.CC", "2.TI", "3.RC", "4.PASSPORT", "5.EC");
-							docType = Integer.parseInt(main.reader.nextLine());
-							if (docType > 0 && docType < 6) {
-								check = true;
-							} else {
-								System.err.printf("Incorrect selection.");
+						moreUsers = true;
+						check = false;
+						int docType = -1;
+						String id = "";
+						String names = "";
+						String lastNames = "";
+						do {
+							try {
+								System.out.printf("%n%s%n(%s  %s  %s  %s  %s) ", "Document Type: ", 
+								"1.CC", "2.TI", "3.RC", "4.PASSPORT", "5.EC");
+								docType = Integer.parseInt(main.reader.nextLine());
+								if (docType > 0 && docType < 6) {
+									check = true;
+								} else {
+									System.err.printf("Incorrect selection.");
+								}
+							} catch (InputMismatchException e) {
+								System.err.printf(e.getMessage());
 							}
-						} catch (InputMismatchException e) {
-							System.err.printf(e.getMessage());
-						}
-					} while (check==false);
-					check = false;
-					do {
-						try {
-							System.out.printf("%nDocument Number: ");
-							id = main.reader.nextLine();
-							main.control.checkUser(id);
-							check = main.check(id);
-						} catch (ExistException e) {
-							System.err.printf(e.getMessage());
-						}catch(DataException e) {
-							System.err.printf(e.getMessage());
-						}
-					} while (check==false);
-					check = false;
-					do {
-						try {
-							System.out.printf("%nNames: ");
-							names = main.reader.nextLine();
-							check = main.check(names);
-						}catch(DataException e) {
-							System.err.printf(e.getMessage());
-						}
-					} while (check==false);
-					check = false;
-					do {
-						try {
-							System.out.printf("%nLast Names: ");
-							lastNames = main.reader.nextLine();
-							check = main.check(lastNames);
-						} catch (DataException e) {
-							System.err.printf(e.getMessage());
-						}
-					} while (check==false);
-					System.out.printf("%nPhone: ");
-					String phone = main.reader.nextLine();
-					System.out.printf("%nAddress: ");
-					String address = main.reader.nextLine();
-					main.control.addUser(docType, id, names, lastNames, phone, address);
-					check = false;
-					do {
-						try {
-							System.out.printf("%n%s%s", "1.Add another User. ", " 2.Back to the Menu.");
-							int condition = Integer.parseInt(main.reader.nextLine());
-							if(condition==1) {
-								check = true;
-							}else if(condition==2) {
-								moreUsers = false;
-								check = true;
-							}else {
-								System.err.printf("Incorrect selection.");
+						} while (check==false);
+						check = false;
+						do {
+							try {
+								System.out.printf("%nDocument Number: ");
+								id = main.reader.nextLine();
+								main.control.checkUser(id);
+								check = main.check(id);
+							} catch (ExistException e) {
+								System.err.printf(e.getMessage());
+							}catch(DataException e) {
+								System.err.printf(e.getMessage());
 							}
-						}catch(InputMismatchException e) {
-							System.err.printf(e.getMessage());
-						}
-					}while(check==false);
-				} while (moreUsers==true);
+						} while (check==false);
+						check = false;
+						do {
+							try {
+								System.out.printf("%nNames: ");
+								names = main.reader.nextLine();
+								check = main.check(names);
+							}catch(DataException e) {
+								System.err.printf(e.getMessage());
+							}
+						} while (check==false);
+						check = false;
+						do {
+							try {
+								System.out.printf("%nLast Names: ");
+								lastNames = main.reader.nextLine();
+								check = main.check(lastNames);
+							} catch (DataException e) {
+								System.err.printf(e.getMessage());
+							}
+						} while (check==false);
+						System.out.printf("%nPhone: ");
+						String phone = main.reader.nextLine();
+						System.out.printf("%nAddress: ");
+						String address = main.reader.nextLine();
+						main.control.addUser(docType, id, names, lastNames, phone, address);
+						check = false;
+						do {
+							try {
+								System.out.printf("%n%s%s", "1.Add another User. ", " 2.Back to the Menu.");
+								int condition = Integer.parseInt(main.reader.nextLine());
+								if(condition==1) {
+									check = true;
+								}else if(condition==2) {
+									moreUsers = false;
+									check = true;
+								}else {
+									System.err.printf("Incorrect selection.");
+								}
+							}catch(InputMismatchException e) {
+								System.err.printf(e.getMessage());
+							}
+						}while(check==false);
+					} while (moreUsers==true);
+				}else if(x==2) {
+					try {
+						System.out.println("Quantity:");
+						int quantity = Integer.parseInt(main.reader.nextLine());
+						main.control.addUsers(quantity);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 				break;
 			case 2:
 				try {
@@ -138,7 +154,7 @@ public class Main {
 						check = false;	
 						System.out.printf("%nDocument Number: ");
 						rs = main.reader.nextLine();
-						System.out.printf("%n%s%n%s",main.control.selectUser(rs).toString(),"1.Assign shift.");
+						System.out.printf("%n%s%n%s",main.control.searchUserById(rs).toString(),"1.Assign shift.");
 						do {
 							try {
 								int condition = Integer.parseInt(main.reader.nextLine());
@@ -177,23 +193,51 @@ public class Main {
 				}
 				break;
 			case 3:
-					try {
-						do {
-							attendMore = true;
-							System.out.printf("%n%s%n[%s]%n%s   %s ", "Actual Shift:",
-							main.control.selectToAttendShift().getCode(), "1.Attend", "2.No user");
-							int atnd = Integer.parseInt(main.reader.nextLine());
-							if(atnd==1||atnd==2) {
-								System.out.printf(main.control.attendShift(atnd));
-							}else {
-								System.err.printf("Incorrect selection.");
-							}
-						}while(attendMore==true);
-					} catch (NullPointerException e) {
-						System.err.printf("%n%s",e.getMessage());
-					}
+				try {
+					System.out.printf("%s",main.control.attendShifts());
+				} catch (NullPointerException e) {
+					System.err.printf("%n%s",e.getMessage());
+				}
 				break;
 			case 4:
+				System.out.printf("%nUser Id to search:");
+				String searchUser = main.reader.nextLine();
+				System.out.printf("%s",main.control.reportUser(searchUser));
+				break;
+			case 5:
+				System.out.printf("%nShift code to search:");
+				String searchShift = main.reader.nextLine();
+				System.out.printf("%s",main.control.reportShift(searchShift));
+				break;
+			case 6:
+				try {
+					do {
+						System.out.printf("%nYear:");
+						int year = Integer.parseInt(main.reader.nextLine());
+						System.out.printf("%nMonth:");
+						int month = Integer.parseInt(main.reader.nextLine());
+						System.out.printf("%nDay:");
+						int day = Integer.parseInt(main.reader.nextLine());
+						System.out.printf("%nHour:");
+						int hour = Integer.parseInt(main.reader.nextLine());
+						System.out.printf("%nMinute:");
+						int min = Integer.parseInt(main.reader.nextLine());
+						if(!main.control.getDate().checkDate(year, month, day, hour, min)) {
+							main.control.getDate().setDateTime(year, month, day, hour, min);
+							check = true;
+						}else {
+							System.out.printf("Incorrect date-time.");
+						}
+					}while(check==false);
+				}catch(Exception e) {
+					System.err.printf("%n%s",e.getMessage());
+				}
+			case 0:
+				try {
+					main.save();
+				} catch (Exception e) {
+					System.err.printf("%n%s",e.getMessage());
+				}
 				System.out.printf("%nGG.");
 				end = true;
 				break;
@@ -207,7 +251,9 @@ public class Main {
 	 * @return The menu options.
 	 */
 	public String menu() {
-		return String.format("%n%s%n%s%n%s%n%s", "1.Add an user", "2.Register a shift", "3.Serve a shift", "4.Exit");
+		return String.format("%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s", control.getDate().format(control.getDate().currentDateTime()),
+				"1.Add an user", "2.Register a shift", "3.Serve shifts", "4.User shifts",
+				"5.Shifts users","6.Modify date-time", "0.Exit");
 	}
 
 	/**

@@ -1,12 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
 *	This class allows create users.
 *	@author Jhon Ijaji.
 *	@version 2.0
 *	@since 1.0
 */
-public class User {
+public class User implements Comparable<User>{
 
 	public final static String CC = "CC";
 	public final static String TI = "TI";
@@ -20,6 +22,9 @@ public class User {
 	private String lastNames;
 	private String phone;
 	private String address;
+	private int faults;
+	private DateTime suspend;
+	ArrayList<Shift> shifts;
 	
 	/**
 	 * This method allows create an user.
@@ -37,8 +42,14 @@ public class User {
 		this.lastNames = lastNames;
 		this.phone = phone;
 		this.address = address;
+		faults = 0;
+		shifts = new ArrayList<Shift>();
 	}
 
+	public void addShift(Shift shift) {
+		shifts.add(shift);
+	}
+	
 	@Override
 	public String toString() {
 		return String.format("%-5s%-15s%s%n%-5s%s %-15s%s",
@@ -91,6 +102,61 @@ public class User {
 	 */
 	public String getAddress() {
 		return address;
+	}
+
+	/**
+	 * This method allows get the strike.
+	 * @return the strike
+	 */
+	public int getFaults() {
+		return faults;
+	}
+
+	/**
+	 * This method allows get the suspend
+	 * @return the suspend
+	 */
+	public DateTime getSuspend() {
+		return suspend;
+	}
+
+	/**
+	 * @param suspend the suspend to set
+	 */
+	public void setSuspend(DateTime suspend) {
+		this.suspend = suspend;
+	}
+
+	/**
+	 * @param faults the faults to set
+	 */
+	public void setFaults(int faults) {
+		this.faults = faults;
+	}
+
+	/**
+	 * @return the shifts
+	 */
+	public ArrayList<Shift> getShifts() {
+		return shifts;
+	}
+
+	/**
+	 * @param shifts the shifts to set
+	 */
+	public void setShifts(ArrayList<Shift> shifts) {
+		this.shifts = shifts;
+	}
+
+	@Override
+	public int compareTo(User o) {
+		if(id.compareTo(o.id)>0) {
+			return 1;
+		}else if(id.compareTo(o.id)<0) {
+			return -1;
+		}else {
+			return 0;
+		}
 	}
 	
 }

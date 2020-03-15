@@ -13,10 +13,11 @@ import customExceptions.ExistException;
 */
 public class ShiftControl implements Serializable{
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
+	private static final String NAMES = "data"+File.separator+"Names.txt";
+	private static final String LASTNAMES = "data"+File.separator+"LastNames.txt";
+	private static final String ID = "data"+File.separator+"Id.txt";
 	private ArrayList<User> users;
 	private ArrayList<Shift> shifts;
 	private DateTime date;
@@ -67,6 +68,29 @@ public class ShiftControl implements Serializable{
 	}
 	
 	/**
+	 * This method allows add users from files.
+	 * @param quantity The quantity of users to add.
+	 * @throws FileNotFoundException If the file does not exist.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public void addUsers(int quantity) throws FileNotFoundException, IOException {
+		BufferedReader brN = new BufferedReader(new FileReader(NAMES));
+		BufferedReader brLN = new BufferedReader(new FileReader(LASTNAMES));
+		BufferedReader brId = new BufferedReader(new FileReader(ID));
+		int count = 0;
+		do {
+			String names = brN.readLine();
+			String lstNames = brN.readLine();
+			String id = brId.readLine();
+			int rand = (int)(Math.random()*5);
+			addUser(rand,id,names,lstNames,"","");
+		}while(count++<quantity);
+		brN.close();
+		brLN.close();
+		brId.close();
+	}
+	
+	/**
 	 * This method allows assign an user to one shift.
 	 * @param id The user document number.
 	 * @return A report of the assigned shift.
@@ -74,10 +98,12 @@ public class ShiftControl implements Serializable{
 	 * @throws NullPointerException If the user object is null throws this exception.
 	 */
 	public String registerShift(String id) throws AlreadyHasShiftException {
-		User temp = selectUser(id);
+		User temp = searchUserById(id);
 		Shift sft = shifts.get(shifts.size()-1);
 		if((checkUserShift(id)==null)) {
 			sft.setUser(temp);
+			float rnd = (float) (Math.random()*5);
+			sft.setShType(new ShiftType("",rnd,String.format("%s",date.format(date.currentDateTime()))));
 			addShift();
 		}else {
 			throw new AlreadyHasShiftException(id,checkUserShift(id).toString());
@@ -85,26 +111,9 @@ public class ShiftControl implements Serializable{
 		return String.format("The Shift %s has been asigned to %s %s",sft.getCode(),temp.getNames(),temp.getLastNames());
 	}
 	
-	/**
-	 * This method allows search an user with the document number.
-	 * @param id The user document number.
-	 * @return The user searched.
-	 * @throws NullPointerException If the list of users is empty throws this exception.
-	 */
-	public User selectUser(String id) {
-		User temp = null;
-		if(!users.isEmpty()) {
-			for(int i=0;i<users.size()&&temp==null;i++) {
-				temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
-			}
-		}else {
-			throw new NullPointerException("The list of users is empty.");
-		}
-		if(temp==null) {
-			throw new NullPointerException("The User with Id "+id+", doesn't exist.");
-		}
-		return temp;
-	} 
+	public void registerShifts(int days,int shiftPerDay) {
+		
+	}
 	
 	/**
 	 * This method allows check if an user already exist in the list.
@@ -145,32 +154,6 @@ public class ShiftControl implements Serializable{
 		}
 		shifts.add(new Shift(code));
 	}
-	
-	/**
-	 * This method allows attend a shift.
-	 * @param status The status to select.
-	 */
-	public String attendShift(int status) {
-		Shift temp = selectToAttendShift();
-		if(status==1)temp.setStatus(Shift.ATTENDED);
-		if(status==2)temp.setStatus(Shift.NO_USER);
-		return String.format("The shift %s has been attended. [%s]",temp.getCode(),temp.getStatus());
-	}
-	
-	/**
-	 * This method allows select the next shift to attend.
-	 * @return The next shift to attend.
-	 */
-	public Shift selectToAttendShift() {
-		Shift toAttend = null;
-		for(int i=0;i<shifts.size()&&toAttend==null;i++) {
-			if(shifts.get(i).getUser()!=null&&shifts.get(i).getStatus().equals(Shift.NOT_ATTENDED)) {
-				toAttend = shifts.get(i);
-			}
-		}
-		if(toAttend==null)throw new NullPointerException("No more shifts to attend.");
-		return toAttend;
-	}
 
 	/**
 	 * This method allows search the user shift
@@ -189,6 +172,103 @@ public class ShiftControl implements Serializable{
 		}
 		return temp;
 	}
+	
+	/**
+	 * This method allows attend shifts automatically.
+	 * @return Some information about the attended shifts.
+	 */
+	public String attendShifts() {
+		float count = 0;
+		boolean flag = false;
+		String show = "";
+		for(int i=0;i<shifts.size()&&flag==false;i++) {
+			if(shifts.get(i).getStatus().equals(Shift.NOT_ATTENDED)) {
+				String date = shifts.get(i).getShType().getCreation();
+				float duration = shifts.get(i).getShType().getTime();
+				//Check if the date is before and plus to date the count.
+				if(this.date.checkDate(this.date.plus(this.date.parse(date), count))) {
+					int x = (int)(Math.random()*2);
+					if(x==1) {
+						shifts.get(i).setStatus(Shift.ATTENDED);
+					}else {
+						shifts.get(i).setStatus(Shift.NO_USER);
+					}
+					searchUserById(shifts.get(i).getUser().getId()).addShift(shifts.get(i));;
+					show += "Attended shift: "+shifts.get(i)+
+							". Date: "+this.date.plus(this.date.parse(date), count)+"\n";
+					count += duration;
+					count += 0.25;
+				}else {
+					flag = true;
+				}
+			}
+		}
+		if(show.equals("")){
+			show = "No shifts attended.";
+		}
+		return show;
+	}
+	
+	/**
+	 * This method allows search an user by the document number.
+	 * @param id The user document number.
+	 * @return The user searched.
+	 * @throws NullPointerException If the list of users is empty throws this exception.
+	 */
+	public User searchUserById(String id) {
+		User temp = null;
+		if(!users.isEmpty()) {
+			for(int i=0;i<users.size()&&temp==null;i++) {
+				temp = users.get(i).getId().equalsIgnoreCase(id)?users.get(i):null;
+			}
+		}else {
+			throw new NullPointerException("The list of users is empty.");
+		}
+		if(temp==null) {
+			throw new NullPointerException("The User with Id "+id+", doesn't exist.");
+		}
+		return temp;
+	}
+	
+	public int binarySearch(String id) { 
+		int left = 0;
+		int rigth = users.size()-1; 
+		while (left<=rigth) { 
+		    int mid = left+(rigth-left)/2;
+		    if (users.get(mid).getId().compareTo(id)>0) 
+		       	rigth = mid-1; 
+		    if (users.get(mid).getId().compareTo(id)<0) 
+		        left = mid+1; 
+		    else {
+		    	return mid;
+		    }
+		}
+		return -1;
+	}
+	
+	public void bubbleSortUsersById() {
+		for(int i=users.size();i>0;i--) {
+			for(int j=0;j<i-1;j++) {
+				if(users.get(j).getId().compareTo(users.get(j+1).getId())>0) {
+					User temp = users.get(j);
+					users.set(j,users.get(j+1));
+					users.set(j+1,temp);
+				}
+			}
+		}
+	}
+	
+	public void isertionSortUsersByName() {
+		for (int i = 1; i<users.size(); ++i) { 
+            User key = users.get(i); 
+            int j = i-1; 
+            while (j>=0&&users.get(j).getNames().compareTo(key.getNames())>0) { 
+            	users.set(j+1,users.get(j--)); 
+            } 
+            users.set(j+1,key); 
+        }
+	}
+	
 	
 	/**
 	 * This method allows modify the date-time.
@@ -213,6 +293,22 @@ public class ShiftControl implements Serializable{
 						tmp.setStatus(Shift.NO_USER);
 					}
 				}
+			}
+		}
+		return show;
+	}
+	
+	public String reportShift(String code) {
+		String show = "";
+		return show;
+	}
+	
+	public String reportUser(String id) {
+		String show = "";
+		User temp = searchUserById(id);
+		if(!temp.getShifts().isEmpty()) {
+			for(int i=0;i<temp.getShifts().size();i++) {
+				show += temp.getShifts().get(i).getCode()+"-"+temp.getShifts().get(i).getStatus()+"\n";
 			}
 		}
 		return show;

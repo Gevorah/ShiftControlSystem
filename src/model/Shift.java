@@ -80,4 +80,14 @@ public class Shift {
 	public ShiftType getShType() {
 		return shType;
 	}
+
+	/**
+	 * This method allows set the shift type.
+	 * @param shType The shift type to set
+	 */
+	public void setShType(ShiftType shType) {
+		this.shType = shType;
+	}
+	
+	
 }

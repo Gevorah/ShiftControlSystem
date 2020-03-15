@@ -12,6 +12,7 @@ import java.time.format.*;
 public class DateTime {
 	
 	private LocalDateTime dateTime;
+	private LocalDateTime aux;
 	private DateTimeFormatter dtf;
 	
 	private int y;
@@ -27,6 +28,7 @@ public class DateTime {
 	public DateTime() {
 		dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		dateTime = LocalDateTime.now();
+		aux = LocalDateTime.now();
 	}
 	
 	/*
@@ -68,27 +70,49 @@ public class DateTime {
 	 * @param minutes The minutes to add.
 	 * @return A date time with minutes added.
 	 */
-	public LocalDateTime plus(float minutes) {
-		return currentDateTime().plusSeconds((long)(minutes*60));
+	public LocalDateTime plus(LocalDateTime date,float minutes) {
+		return date.plusSeconds((long)(minutes*60));
 	}
 	
 	/**
-	 * This method allows check if the given date-time is before to the program date-time.
+	 * This method allows check if this date-time is before the specified date-time.
 	 * @param year The year to check.
 	 * @param month The month to check.
 	 * @param day The day to check.
 	 * @param hour The hour to check.
 	 * @param min The minute to check.
-	 * @return if is before.
+	 * @return true if this date-time is before the specified date-time
 	 */
 	public boolean checkDate(int year, int month, int day, int hour, int min){
         LocalDateTime to = LocalDateTime.of(year,month,day,hour,min);
         return to.isBefore(currentDateTime());
     }
 	
-	@Override
-	public String toString() {
-		return "["+currentDateTime().format(dtf)+"]";
+	/**
+	 * This method allows check if this date-time is before the specified date-time. 
+	 * @param date The date-time to compare.
+	 * @return true if this date-time is before the specified date-time.
+	 */
+	public boolean checkDate(LocalDateTime date) {
+		return aux.isBefore(date);
 	}
-
+	
+	/**
+	 * This method allows parse a text to format of date.
+	 * @param date The date to parse.
+	 * @return The date formatted.
+	 */
+	public LocalDateTime parse(String date) {
+		return LocalDateTime.parse(date,dtf);
+	}
+	
+	/**
+	 * This method allows show the date-time in specific format.
+	 * @param dt The date-time to change format.
+	 * @return The date-time formatted.
+	 */
+	public String format(LocalDateTime dt) {
+		return dt.format(dtf);
+	}
+	
 }
